@@ -1,5 +1,6 @@
 # ParticleFiltering
-Python code from M2 project on Sequential Monte Carlo methods / Particle Filters and PMCMC on graphical models
+
+R code from M2 project on Sequential Monte Carlo methods / Particle Filters on Probabilistic Graphical Models
 
 
 ===============
