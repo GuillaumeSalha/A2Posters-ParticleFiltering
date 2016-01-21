@@ -1,6 +1,6 @@
 # Particle Filtering
 
-This repository provides **R** codes and posters from our M2 project on **Sequential Monte Carlo methods for Probabilistic Graphical Models**. 
+This repository provides **R** codes and posters from our M2 project on **Sequential Monte Carlo methods for Probabilistic Graphical Models**, with applications on Classical XY Model.
 
 We provide a review and implementations from the NIPS 2014 paper :
 
