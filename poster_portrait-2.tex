@@ -1,0 +1,382 @@
+\documentclass[portrait,final,a0paper,fontscale=0.277]{baposter}
+
+\usepackage{calc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{relsize}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{bm}
+\usepackage{url}
+
+\usepackage{graphicx}
+\usepackage{multicol}
+
+%\usepackage{times}
+%\usepackage{helvet}
+%\usepackage{bookman}
+\usepackage{palatino}
+\usepackage[]{algorithm2e}
+\usepackage{pseudocode}
+
+
+
+
+
+
+\newcommand{\captionfont}{\footnotesize}
+
+\graphicspath{{images/}{../images/}}
+\usetikzlibrary{calc}
+
+\newcommand{\SET}[1]  {\ensuremath{\mathcal{#1}}}
+\newcommand{\MAT}[1]  {\ensuremath{\boldsymbol{#1}}}
+\newcommand{\VEC}[1]  {\ensuremath{\boldsymbol{#1}}}
+\newcommand{\Video}{\SET{V}}
+\newcommand{\video}{\VEC{f}}
+\newcommand{\track}{x}
+\newcommand{\Track}{\SET T}
+\newcommand{\LMs}{\SET L}
+\newcommand{\lm}{l}
+\newcommand{\PosE}{\SET P}
+\newcommand{\posE}{\VEC p}
+\newcommand{\negE}{\VEC n}
+\newcommand{\NegE}{\SET N}
+\newcommand{\Occluded}{\SET O}
+\newcommand{\occluded}{o}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Some math symbols used in the text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Multicol Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\columnsep}{1.5em}
+\setlength{\columnseprule}{0mm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Save space in lists. Use this after the opening of the list
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\compresslist}{%
+\setlength{\itemsep}{1pt}%
+\setlength{\parskip}{0pt}%
+\setlength{\parsep}{0pt}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Begin of Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\baselinestretch}{1.15}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Here starts the poster
+%%%---------------------------------------------------------------------------
+%%% Format it to your taste with the options
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define some colors
+
+%\definecolor{lightblue}{cmyk}{0.83,0.24,0,0.12}
+\definecolor{lightblue}{rgb}{0.145,0.6666,1}
+
+% Draw a video
+\newlength{\FSZ}
+\newcommand{\drawvideo}[3]{% [0 0.25 0.5 0.75 1 1.25 1.5]
+   \noindent\pgfmathsetlength{\FSZ}{\linewidth/#2}
+   \begin{tikzpicture}[outer sep=0pt,inner sep=0pt,x=\FSZ,y=\FSZ]
+   \draw[color=lightblue!50!black] (0,0) node[outer sep=0pt,inner sep=0pt,text width=\linewidth,minimum height=0] (video) {\noindent#3};
+   \path [fill=lightblue!50!black,line width=0pt] 
+     (video.north west) rectangle ([yshift=\FSZ] video.north east) 
+    \foreach \x in {1,2,...,#2} {
+      {[rounded corners=0.6] ($(video.north west)+(-0.7,0.8)+(\x,0)$) rectangle +(0.4,-0.6)}
+    }
+;
+   \path [fill=lightblue!50!black,line width=0pt] 
+     ([yshift=-1\FSZ] video.south west) rectangle (video.south east) 
+    \foreach \x in {1,2,...,#2} {
+      {[rounded corners=0.6] ($(video.south west)+(-0.7,-0.2)+(\x,0)$) rectangle +(0.4,-0.6)}
+    }
+;
+   \foreach \x in {1,...,#1} {
+     \draw[color=lightblue!50!black] ([xshift=\x\linewidth/#1] video.north west) -- ([xshift=\x\linewidth/#1] video.south west);
+   }
+   \foreach \x in {0,#1} {
+     \draw[color=lightblue!50!black] ([xshift=\x\linewidth/#1,yshift=1\FSZ] video.north west) -- ([xshift=\x\linewidth/#1,yshift=-1\FSZ] video.south west);
+   }
+   \end{tikzpicture}
+}
+
+\hyphenation{resolution occlusions}
+%%
+\begin{poster}%
+  % Poster Options
+  {
+  % Show grid to help with alignment
+  grid=false,
+  % Column spacing
+  colspacing=1em,
+  % Color style
+  bgColorOne=white,
+  bgColorTwo=white,
+  borderColor=lightblue,
+  headerColorOne=black,
+  headerColorTwo=lightblue,
+  headerFontColor=white,
+  boxColorOne=white,
+  boxColorTwo=lightblue,
+  % Format of textbox
+  textborder=roundedleft,
+  % Format of text header
+  eyecatcher=true,
+  headerborder=closed,
+  headerheight=0.1\textheight,
+%  textfont=\sc, An example of changing the text font
+  headershape=roundedright,
+  headershade=shadelr,
+  headerfont=\Large\bf\textsc, %Sans Serif
+  textfont={\setlength{\parindent}{1.5em}},
+  boxshade=plain,
+%  background=shade-tb,
+  background=plain,
+  linewidth=2pt
+  }
+  % Eye Catcher
+  {\includegraphics[height=0.1em]{plot1.png}} 
+  % Title
+  {\bf\textsc{Sequential Monte Carlo Methods For Probabilistic Graphical Models}\vspace{0.5em}}
+  % Authors
+  {\textsc{Gautier Appert, Lionel Riou-Durand, Guillaume Salha}}
+  % University logo
+  {% The makebox allows the title to flow into the logo, this is a hack because of the L shaped logo.
+    \includegraphics[height=6.5em]{logo_ENS.jpg}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Now define the boxes that make up the poster
+%%%---------------------------------------------------------------------------
+%%% Each box has a name and can be placed absolutely or relatively.
+%%% The only inconvenience is that you can only specify a relative position 
+%%% towards an already declared box. So if you have a box attached to the 
+%%% bottom, one to the top and a third one which should be in between, you 
+%%% have to specify the top and bottom boxes before you specify the middle 
+%%% box.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    % A coloured circle useful as a bullet with an adjustably strong filling
+    \newcommand{\colouredcircle}{%
+      \tikz{\useasboundingbox (-0.2em,-0.32em) rectangle(0.2em,0.32em); \draw[draw=black,fill=lightblue,line width=0.03em] (0,0) circle(0.18em);}}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \headerbox{5 - SMC Sampler}{name=problem,column=0,row=0,span = 2}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{multicols}{2}
+\noindent SMC algorithms are based on some sequential use of Importance Sampling.
+
+\begin{itemize}
+ \item  The aim is to deal with an untractable distribution in high dimension: $\pi_d(x_{1:d})=\frac{\gamma_d(x_{1:d})}{Z}$. 
+ \item SMC sampler can be used for instance to sample from $\pi_d(x_{1:d})$ or to estimate the partition function $Z$.
+\item We \textbf{sample iteratively from conditional proposals in lower dimension}, corresponding to cliques of the graph.
+\item SMC methods include a \textbf{re-sampling} step to avoid exponential grow in the weights.
+\end{itemize}
+\columnbreak
+
+\begin{algorithm}[H]
+\label{alg:qquad}
+\DontPrintSemicolon
+\textit{Perform each step for $i=1,...,N$}\;
+\Begin{
+Sample $X_{\mathcal{L}_1}^i \sim r_1(.)$\;
+Set $w_1^i = \gamma_1(X_{\mathcal{L}_1}^i)/r_1(X_{\mathcal{L}_1}^i)$\;
+\For{$k = 2,...,K$}{
+Sample $a_k^i$ according to $\mathbb{P}(a_k^i =j) = \frac{\nu_{k-1}^j w_{k-1}^j}{\sum_l \nu_{k-1}^l w_{k-1}^l}$\;
+Sample $\xi_k^i \sim r_k(.|X_{\mathcal{L}_{k-1}}^{a_k^i})$\;
+Set $X_{\mathcal{L}_k}^i = X_{\mathcal{L}_{k-1}}^{a_k^i} \cup \xi_k^i$\;
+Set $w_k^i = W_k(X_{\mathcal{L}_k}^i)$
+}
+}
+\caption{Sequential Monte Carlo}
+\end{algorithm}
+
+
+\end{multicols}
+   \vspace{0.3em}
+   
+   
+
+
+ }
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \headerbox{7 - Application to Classical XY model}{name=contribution,column=0,below=problem, span=2}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{multicols}{2}
+
+\begin{center}
+\includegraphics[width=0.55\linewidth]{xy.png}
+\end{center}
+
+\begin{itemize}
+    \item \textbf{XY Model}: A 2-dimensional d-square lattice model, extension of Ising model
+    \item Set of cliques: pairs of adjacent vertices $x_i$ and $x_j$
+    \item Joint probability distribution:
+\end{itemize}
+%The classical XY model is  $\mathcal{E}$. 
+%Given the particular structure of the XY model, t which reduces the joint probability distribution to be of the simple form :
+$$
+p(X_{\mathcal{V}})  \propto \exp\left\{ \beta \displaystyle\sum_{i \sim j} \cos(x_i-x_j)   \right\}
+$$
+%To approximate iteratively our sequence of distributions $(\gamma_t)_t$, we add one variable at a time and all the associated neighbours. 
+\textbf{Several decompositions} are used to sequence the graph :  left-right decomposition, random decomposition...
+\begin{center}
+\includegraphics[width=0.8\linewidth]{plot4.png}
+\end{center}
+
+
+\noindent We observe in practice that \textbf{the ordering has an important impact on the performance} of the SMC sampler.
+
+\columnbreak
+
+% je m'occupe du plot ! plot OK !!!
+
+
+%Sequence of intermediate target distribution $(\gamma_t)_t$ is given :
+%$$
+%\gamma_k(X_{\mathcal{L}_k}) \propto 
+%\gamma_{k-1}(X_{\mathcal{L}_{k-1}}) \hspace{0.1cm} 
+%\exp\left\{ \kappa_k(X_{\mathcal{L}_{k-1}}) \cos(x_k-\mu_k(X_{\mathcal{L}_{k-1}}))   \right\}
+%$$
+%This leads us to choose the so-called 
+% distribution to be our proposal distribution is \textit{von Mises} whose probability density function is given by :
+%$$
+%q_k(x_k|X_{\mathcal{L}_{k-1}}) = \frac{\exp\left\{ \kappa_k(X_{\mathcal{L}_{k-1}}) \cos(x_k-\mu_k(X_{\mathcal{L}_{k-1}}))   \right\}
+%}{2\pi I_{0}( \kappa_k(X_{\mathcal{L}_{k-1}}))}
+%$$
+
+%\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.66\linewidth]{MSE.pdf}
+
+Orderings and M.S.E. evolution
+\end{center}
+\begin{center}
+\includegraphics[width=0.72\linewidth]{ESS.pdf}
+
+Evolution of E.S.S. measure 
+
+(re-sampling under 50\%)
+\end{center}
+\end{multicols}
+   \vspace{0.3em}
+  }
+
+
+
+
+
+
+
+
+
+
+
+\headerbox{6 - Partition function}{name=smc,column=2,span=1,row=0}{
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent The \textbf{partition function} - normalizing constant - is a very interesting quantity in many applications (see $[1]$), such as:\begin{itemize}
+    \item likelihood-based learning of parameters of the PGM
+    \item derivation of free energy of a system of objects in mechanics
+\end{itemize}\newline
+
+\noindent Our Sequential Monte Carlo approach provides an \textbf{unbiased estimator} of this partition function, given by:
+$$ \hat{Z}_{k}^{N} = \left( \frac{1}{N}  \displaystyle\sum_{i=1}^{N} \omega_{k}^{i} \right)
+\left\{ \displaystyle\prod_{l=1}^{k-1} \frac{1}{N} \displaystyle\sum_{i=1}^{N} \nu_{l}^{i}  \omega_{l}^{i} \right\}$$
+\newline 
+\noindent This result is not straightforward. Therefore, the proof is reported in our final report.
+
+      \vspace{-0.1em}
+}
+
+
+
+
+
+  \headerbox{8 - To go further}{name=background model,column=2, span = 1, below=smc}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent We presented a new framework for inference in PGM using Sequential Monte Carlo. \newline
+
+\noindent Although the NIPS 2014 paper is not the first tentative on this topic, previous work were:\begin{itemize}
+    \item only designed for Gaussian or discrete interactions between variables [Hamze and De Freitas (2005); Everitt (2012)]
+    \item and-or did not develop such sequential decomposition of the graph [Isard, 2003; Frank \textit{et al.},2009]
+\end{itemize}  \newline
+
+\noindent Besides XY model, the authors also introduced two others applications for their SMC sampler:\begin{itemize}
+    \item a simple toy \textbf{Gaussian Markov Random Field} model to incorporate \textbf{Particle MCMC} sampling
+    \item a \textbf{Latent Dirichlet Allocation} - directed - PGM, to perform likelihood estimation in topic models
+\end{itemize} \newline
+
+\noindent We provide a quick review of these applications in the final report.
+   \vspace{0.3em}
+  }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \headerbox{References}{name=references,column=0,span=2, above=bottom}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \smaller
+    \bibliographystyle{ieee}
+    \renewcommand{\section}[2]{\vskip 0.05em}
+      \begin{thebibliography}{1}\itemsep=-0.01em
+      \setlength{\baselineskip}{0.4em}
+      \bibitem{nips:nipssmc}
+      Naesseth, C. A., Lindsten, F., \& Schon, T. B. (2014). Sequential Monte Carlo for graphical models. \textit{In Advances in Neural Information Processing Systems}, pp. 1862-1870.
+        \bibitem{doucet:tuto}
+        Doucet, A., \& Johansen, A. M. (2009). A tutorial on particle filtering and smoothing: Fifteen years later. \textit{Handbook of Nonlinear Filtering}, 12, 656-704.
+        \bibitem{robert:mcmc}
+        Robert, C., & Casella, G. (2004). Monte Carlo statistical methods. \textit{Springer Science & Business Media}.
+        \bibitem{xy:tuto}
+        Chaikin, P. M., & Lubensky, T. C. (2000). Principles of condensed matter physics. \textit{Cambridge: Cambridge university press}.
+      \end{thebibliography}
+   \vspace{0.3em}
+  }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \headerbox{Source Code}{name=source,column=2,span = 1, above=bottom}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \noindent
+  \begin{minipage}{\linewidth}
+  \begin{minipage}{0.5\linewidth}
+    \indent{}All implementations have been made with R. The entire source code of this project will be available on the following GitHub link: \\
+  \end{minipage}\hfill%
+  \begin{minipage}{0.48\linewidth}
+  \hfill\includegraphics[width=\linewidth]{flashcode.png}
+  \end{minipage}
+  \end{minipage}
+  \url{https://github.com/GuillaumeSalha/ParticleFiltering}
+  }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{poster}
+
+\end{document}

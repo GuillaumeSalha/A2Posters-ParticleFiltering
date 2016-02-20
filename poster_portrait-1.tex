@@ -1,0 +1,295 @@
+\documentclass[portrait,final,a0paper,fontscale=0.277]{baposter}
+
+\usepackage{calc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{relsize}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{bm}
+\usepackage{url}
+
+\usepackage{graphicx}
+\usepackage{multicol}
+
+%\usepackage{times}
+%\usepackage{helvet}
+%\usepackage{bookman}
+\usepackage{palatino}
+
+\newcommand{\captionfont}{\footnotesize}
+
+\graphicspath{{images/}{../images/}}
+\usetikzlibrary{calc}
+
+\newcommand{\SET}[1]  {\ensuremath{\mathcal{#1}}}
+\newcommand{\MAT}[1]  {\ensuremath{\boldsymbol{#1}}}
+\newcommand{\VEC}[1]  {\ensuremath{\boldsymbol{#1}}}
+\newcommand{\Video}{\SET{V}}
+\newcommand{\video}{\VEC{f}}
+\newcommand{\track}{x}
+\newcommand{\Track}{\SET T}
+\newcommand{\LMs}{\SET L}
+\newcommand{\lm}{l}
+\newcommand{\PosE}{\SET P}
+\newcommand{\posE}{\VEC p}
+\newcommand{\negE}{\VEC n}
+\newcommand{\NegE}{\SET N}
+\newcommand{\Occluded}{\SET O}
+\newcommand{\occluded}{o}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Some math symbols used in the text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Multicol Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\columnsep}{1.5em}
+\setlength{\columnseprule}{0mm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Save space in lists. Use this after the opening of the list
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\compresslist}{%
+\setlength{\itemsep}{1pt}%
+\setlength{\parskip}{0pt}%
+\setlength{\parsep}{0pt}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Begin of Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\baselinestretch}{1.15}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Here starts the poster
+%%%---------------------------------------------------------------------------
+%%% Format it to your taste with the options
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define some colors
+
+%\definecolor{lightblue}{cmyk}{0.83,0.24,0,0.12}
+\definecolor{lightblue}{rgb}{0.145,0.6666,1}
+
+% Draw a video
+\newlength{\FSZ}
+\newcommand{\drawvideo}[3]{% [0 0.25 0.5 0.75 1 1.25 1.5]
+   \noindent\pgfmathsetlength{\FSZ}{\linewidth/#2}
+   \begin{tikzpicture}[outer sep=0pt,inner sep=0pt,x=\FSZ,y=\FSZ]
+   \draw[color=lightblue!50!black] (0,0) node[outer sep=0pt,inner sep=0pt,text width=\linewidth,minimum height=0] (video) {\noindent#3};
+   \path [fill=lightblue!50!black,line width=0pt] 
+     (video.north west) rectangle ([yshift=\FSZ] video.north east) 
+    \foreach \x in {1,2,...,#2} {
+      {[rounded corners=0.6] ($(video.north west)+(-0.7,0.8)+(\x,0)$) rectangle +(0.4,-0.6)}
+    }
+;
+   \path [fill=lightblue!50!black,line width=0pt] 
+     ([yshift=-1\FSZ] video.south west) rectangle (video.south east) 
+    \foreach \x in {1,2,...,#2} {
+      {[rounded corners=0.6] ($(video.south west)+(-0.7,-0.2)+(\x,0)$) rectangle +(0.4,-0.6)}
+    }
+;
+   \foreach \x in {1,...,#1} {
+     \draw[color=lightblue!50!black] ([xshift=\x\linewidth/#1] video.north west) -- ([xshift=\x\linewidth/#1] video.south west);
+   }
+   \foreach \x in {0,#1} {
+     \draw[color=lightblue!50!black] ([xshift=\x\linewidth/#1,yshift=1\FSZ] video.north west) -- ([xshift=\x\linewidth/#1,yshift=-1\FSZ] video.south west);
+   }
+   \end{tikzpicture}
+}
+
+\hyphenation{resolution occlusions}
+%%
+\begin{poster}%
+  % Poster Options
+  {
+  % Show grid to help with alignment
+  grid=false,
+  % Column spacing
+  colspacing=1em,
+  % Color style
+  bgColorOne=white,
+  bgColorTwo=white,
+  borderColor=lightblue,
+  headerColorOne=black,
+  headerColorTwo=lightblue,
+  headerFontColor=white,
+  boxColorOne=white,
+  boxColorTwo=lightblue,
+  % Format of textbox
+  textborder=roundedleft,
+  % Format of text header
+  eyecatcher=true,
+  headerborder=closed,
+  headerheight=0.1\textheight,
+%  textfont=\sc, An example of changing the text font
+  headershape=roundedright,
+  headershade=shadelr,
+  headerfont=\Large\bf\textsc, %Sans Serif
+  textfont={\setlength{\parindent}{1.5em}},
+  boxshade=plain,
+%  background=shade-tb,
+  background=plain,
+  linewidth=2pt
+  }
+  % Eye Catcher
+  {\includegraphics[height=0.1em]{plot1.png}} 
+  % Title
+  {\bf\textsc{Sequential Monte Carlo Methods For Probabilistic Graphical Models}\vspace{0.5em}}
+  % Authors
+  {\textsc{Gautier Appert, Lionel Riou-Durand, Guillaume Salha}}
+  % University logo
+  {% The makebox allows the title to flow into the logo, this is a hack because of the L shaped logo.
+    \includegraphics[height=6.5em]{logo_ENS.jpg}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Now define the boxes that make up the poster
+%%%---------------------------------------------------------------------------
+%%% Each box has a name and can be placed absolutely or relatively.
+%%% The only inconvenience is that you can only specify a relative position 
+%%% towards an already declared box. So if you have a box attached to the 
+%%% bottom, one to the top and a third one which should be in between, you 
+%%% have to specify the top and bottom boxes before you specify the middle 
+%%% box.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    % A coloured circle useful as a bullet with an adjustably strong filling
+    \newcommand{\colouredcircle}{%
+      \tikz{\useasboundingbox (-0.2em,-0.32em) rectangle(0.2em,0.32em); \draw[draw=black,fill=lightblue,line width=0.03em] (0,0) circle(0.18em);}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \headerbox{1 - Objectives}{name=problem,column=0,row=0}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent General context:
+\begin{itemize}
+\item Inference in statistical models involving a large number of latent variables is in general a difficult problem
+\item{Probabilistic Graphical Models} are a relevant and useful way to tackle this issue in many cases
+\end{itemize}
+
+\noindent In this project, we focus on \textbf{Sequential Monte Carlo methods} to solve \textbf{inference problems} in graphical models:
+\begin{itemize}
+\item We provide a review of the NIPS 2014 article of Naesseth, Lindsten and Sch{\"o}m $[1]$
+\item We explain their new framework to make use of SMC methods in PGM
+\item We implement the method on Classical XY Model
+\end{itemize}
+   \vspace{0.3em}
+ }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \headerbox{2 - Graphical Models}{name=contribution,column=0,below=problem, above=bottom}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \noindent We consider \textbf{undirected models} of the form:
+    $$p(X_{\mathcal{V}}) = \frac{1}{Z} \displaystyle\prod_{c \in \mathcal{C}} \psi_{c}(X_c),$$
+    where the graph  $\mathcal{G} = \{\mathcal{V}, \mathcal{E}\}$ has vertex set $\mathcal{V} = \{X_1,...,X_{|\mathcal{V}|}\}$, edge set $\mathcal{E}$, cliques $\mathcal{C}$ and $Z = \sum_X \displaystyle\prod_{c \in \mathcal{C}} \psi_{c}(X_c)$ is the \textbf{partition function} (normalizing constant).
+    \newline
+    
+    \noindent To make interactions between variables more explicit, $[1]$ define a \textbf{factor graph} $\mathcal{F} = \{\mathcal{V},\Psi,\mathcal{E}'\}$, associated to $\mathcal{G}$:
+    \begin{itemize}
+    \item Vertices: original r.v. + factors $\Psi = \{\psi_c : c \in \mathcal{C}\}$
+    \item Edges: from variables to factors
+    \end{itemize}
+
+    
+\noindent For instance, the following graphical model:
+    
+    \includegraphics[width=0.75\linewidth]{plot1.png}
+    
+   \vspace{0.3em}
+   
+   \noindent could be associated to the following factor graph: 
+   
+   \includegraphics[width=0.9\linewidth]{plot2.png}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\headerbox{3 - Sequential Decomposition of Graphical Models}{name=results,column=1,span=2,row=0}{
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \begin{multicols}{2}
+  \noindent In order to use SMC methods for inference in graphical models, it is necessary to define a \textbf{sequence of target probability distributions} to approximate:
+  \begin{itemize}
+  \item We could intuitively want to use marginal distributions under $p(X_{\mathcal{V}})$. However, this is not an obligation ($[1]$)
+  \item The choice of target distribution is theoretically quite arbitrary as long as, at some final iteration, we recover
+$p(X_{\mathcal{V}})$
+\item In $[1]$, they obtain such a sequence by doing a \textbf{sequential decomposition} of the graph
+\end{itemize}
+
+\columnbreak
+
+\noindent  \textbf{Sequential decomposition:}
+Define a sequence of factors $\{\psi_k\}^K_{k=1}$ such that
+$$\psi_k(X_{\mathcal{I}_k}) = \displaystyle\prod_{c \in \mathcal{C}_k} \psi_{c}(X_c),$$
+where the different $\mathcal{C}_k \subset \mathcal{C}$ verify
+$\bigcup_{k=1}^K \mathcal{C}_k = \mathcal{C}, \hspace{0.3cm}$
+and where $\mathcal{I}_k = \bigcup_{c \in \mathcal{C}_k} c \subseteq \{1,...,|\mathcal{V}|\}.$
+
+\noindent Therefore, the factorizarion of $p$ can be rewritten as:
+$$p(X_{\mathcal{V}}) = \frac{1}{Z} \displaystyle\prod_{k = 1}^K \psi_k(X_{\mathcal{I}_k}).$$
+
+We report a possible decomposition of the previous factor graph:
+
+\end{multicols}
+
+
+\begin{center}
+  \includegraphics[width=0.75\linewidth]{plot3.png}
+  \end{center}
+      \begin{multicols}{2}
+\noindent $[1]$ denote the auxiliary quantities
+by $\tilde{\gamma}_k(X_{\mathcal{L}_k}) := \prod_{l = 1}^k \psi_l(X_{\mathcal{I}_l})$, with $\mathcal{L}_k := \cup_{l=1}^k \mathcal{I}_l$ and 
+$\mathcal{L}_K = \mathcal{V}$. So:
+$$p(X_{\mathcal{L}_K}) \propto \tilde{\gamma}_K(X_{\mathcal{L}_K}).$$
+Therefore, we obtain the correct target distribution at time $K$.
+\columnbreak
+
+\noindent The corresponding normalized probability distribution functions are given by 
+$\bar{\gamma}_k(X_{\mathcal{L}_k}) = \tilde{\gamma}_k(X_{\mathcal{L}_k})/Z_k$ with $Z_k = \int \tilde{\gamma}_k(X_{\mathcal{L}_k}) d X_{\mathcal{L}_k}$. 
+
+\noindent An important requirement:
+$$\int \tilde{\gamma}_k(X_{\mathcal{L}_k}) d X_{\mathcal{L}_k} < +\infty, 
+\forall\ k \in \{1,...,K\}$$
+
+\end{multicols}
+      \vspace{-0.6em}
+}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \headerbox{4 - Importance Sampling}{name=background model,column=1,, span = 2, above=bottom}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{multicols}{2}
+
+  \indent Sequential Monte-Carlo methods relate to \textbf{Importance Sampling}, a well known Monte-Carlo method for:
+  \begin{itemize}
+      \item Approximating intractable integrals
+      \item More generally, sample indirectly from a target distribution
+  \end{itemize}
+  
+  Let $\pi$ be an intractable density, $(X^{(1)},\dots,X^{(N)})$ be i.i.d. samples from a positive \textbf{proposal distribution} $q$ from which we can sample. We define the importance weights as $w(x) := \frac{\gamma(x)}{q(x)}$. \columnbreak
+  
+  \noindent The \textbf{normalized weights} are $W(X^{(i)}):=\frac{w(X^{(i)})}{\sum_{j=1}^Nw(X^{(j)})}$.
+We derive using the LLN:
+$$
+\hat{\mathcal{I}}_{\text{NIS}} := \sum_{i=1}^{N} h(X^{(i)}) W(X^{(i)})
+\overset{\text{p.s}}{\longrightarrow} \mathbb{E}_{X \sim \pi}[h(X)]
+$$
+\noindent It also provides a \textbf{point-mass approximation} of the target distribution.
+
+\noindent However, IS collapses when the dimension is too large as the variance of the weights grows exponentially. To tackle this issue, we describe the SMC sampler, in section 5.
+  \end{multicols}
+   \vspace{0.3em}
+  }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{poster}
+
+\end{document}
+
